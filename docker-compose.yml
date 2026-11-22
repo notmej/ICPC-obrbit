@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: icpc-orbit-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: icpc_orbit
+      MYSQL_USER: orbit
+      MYSQL_PASSWORD: orbit_local_only
+      MYSQL_ROOT_PASSWORD: orbit_root_local_only
+      TZ: UTC
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - orbit_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u orbit -porbit_local_only --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 25
+volumes:
+  orbit_mysql_data:

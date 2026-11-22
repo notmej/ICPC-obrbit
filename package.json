@@ -1,0 +1,74 @@
+{
+  "name": "icpc-orbit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-first competitive programming journey dashboard",
+  "main": "desktop/dist/main.js",
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB,DESKTOP -c green,cyan,magenta \"npm:dev:server\" \"npm:dev:web\" \"npm:dev:desktop\"",
+    "dev:web": "vite --host 127.0.0.1",
+    "dev:server": "tsx watch server/src/index.ts",
+    "dev:desktop": "wait-on http://127.0.0.1:5173 http://127.0.0.1:4618/api/health && npm run build:desktop && electron . --dev",
+    "dev:browser": "concurrently -k \"npm:dev:server\" \"npm:dev:web\"",
+    "build": "npm run build:server && npm run build:desktop && tsc -p tsconfig.json --noEmit && vite build",
+    "build:server": "tsc -p server/tsconfig.json",
+    "build:desktop": "tsc -p desktop/tsconfig.json",
+    "start": "electron .",
+    "package:mac": "npm run build && electron-builder --mac dmg zip",
+    "package:win": "npm run build && electron-builder --win nsis",
+    "package:linux": "npm run build && electron-builder --linux AppImage",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "express": "^4.21.2",
+    "lucide-react": "^0.468.0",
+    "mysql2": "^3.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.7",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.5",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "dev.icpc.orbit",
+    "productName": "ICPC Orbit",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "server/dist/**/*",
+      "desktop/dist/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "category": "Education"
+    }
+  }
+}
